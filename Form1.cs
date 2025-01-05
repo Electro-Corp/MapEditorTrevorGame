@@ -124,6 +124,8 @@ namespace TrevorGridThingy
         public MainWindow()
         {
             InitializeComponent();
+            this.KeyPreview = true;
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MainWindow_KeyPress);
         }
 
         private void MainWindow_Load(object sender, EventArgs e)
@@ -367,6 +369,35 @@ namespace TrevorGridThingy
             {
                 e.Cancel = true;
             }
+        }
+
+        private void MainWindow_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 'q')
+            {
+                if(currentTick == 0)
+                {
+                    trackBar1.Value = trackBar1.Maximum;
+                }
+                else
+                {
+                    trackBar1.Value--;
+                }
+            }
+            if (e.KeyChar == 'e')
+            {
+                if (currentTick == trackBar1.Maximum)
+                {
+                    trackBar1.Value = 0;
+                }
+                else
+                {
+                    trackBar1.Value++;
+                }
+            }
+            currentTick = trackBar1.Value;
+            toolStripStatusLabel1.Text = "Current tick: " + currentTick.ToString();
+            refreshTick(currentTick);
         }
     }
 }
