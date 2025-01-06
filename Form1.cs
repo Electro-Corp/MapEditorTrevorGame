@@ -230,11 +230,35 @@ namespace TrevorGridThingy
 
         private void TileTemp_Click(object sender, EventArgs e)
         {
+            
             Button clickButton = sender as Button;
             currentButton = clickButton;
             Point pos = (Point)currentButton.Tag;
+            int prev = board.ticks[currentTick].tiles[pos.Y][pos.X].num;
             (board.ticks[currentTick].tiles[pos.Y][pos.X]) = new Tile(currentColor);
             currentButton.BackColor = board.ticks[currentTick].tiles[pos.Y][pos.X].getColor();
+
+            if (prev == 1)
+            {
+                if (currentTick + 1 < trackBar1.Maximum)
+                {
+                    // We're good to go
+                    board.ticks[currentTick + 1].tiles[pos.Y][pos.X] = new Tile(0);
+                    for (int i = 1; i < Math.Min(yellow_speed, trackBar1.Maximum - currentTick); i++)
+                    {
+                        board.ticks[currentTick + i].tiles[pos.Y][pos.X] = new Tile(0);
+                    }
+                    if (currentTick + yellow_speed < trackBar1.Maximum)
+                    {
+                        board.ticks[currentTick + yellow_speed].tiles[pos.Y][pos.X] = new Tile(0);
+                    }
+                    // Calculate some shit (how long red boi stay)
+                    for (int i = yellow_speed + 1; i < Math.Min(speed, trackBar1.Maximum - (currentTick + yellow_speed)); i++)
+                    {
+                        board.ticks[currentTick + i].tiles[pos.Y][pos.X] = new Tile(0);
+                    }
+                }
+            }
 
 
             refreshTick(currentTick);
@@ -294,6 +318,7 @@ namespace TrevorGridThingy
             String list = "[";
             for (int i = 0; i < trackBar1.Maximum; i++)
             {
+                list += "[";
                 if (i == 0)
                 {
                     list += board.ticks[i].toString();
